@@ -1,4 +1,4 @@
-const CACHE_NAME = 'my-iphone-app-v4';
+const CACHE_NAME = 'my-iphone-app-v5';
 const urlsToCache = [
     './',
     './index.html',

@@ -36,15 +36,6 @@ function setupEventListeners() {
             loadConsoleHistory(currentBot);
         });
     });
-    
-    // Send command
-    const sendButton = document.getElementById('send-command');
-    const consoleInput = document.getElementById('console-input');
-    
-    sendButton.addEventListener('click', () => sendCommand());
-    consoleInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendCommand();
-    });
 }
 
 function startMonitoring() {
@@ -73,6 +64,7 @@ async function updateStatus() {
         // Update bot statuses
         updateBotStatus('rustpp', data.bots.rustpp);
         updateBotStatus('rcon', data.bots.rcon);
+        updateBotStatus('rats', data.bots.rats);
         
         // Update Pi resources
         updatePiResources(data.pi);
@@ -177,38 +169,6 @@ async function loadConsoleHistory(bot) {
         addConsoleOutput('error', `Failed to load console: ${error.message}`);
         addConsoleOutput('warning', 'Check that API server is running and accessible');
         addConsoleOutput('system', `Trying to connect to: ${API_URL}`);
-    }
-}
-
-async function sendCommand() {
-    const input = document.getElementById('console-input');
-    const command = input.value.trim();
-    
-    if (!command) return;
-    
-    // Display command in console
-    addConsoleOutput('command', `> ${command}`);
-    input.value = '';
-    
-    try {
-        const response = await fetch(`${API_URL}/rcon`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                bot: currentBot,
-                command: command
-            })
-        });
-        
-        if (!response.ok) throw new Error('Command failed');
-        
-        const data = await response.json();
-        addConsoleOutput('system', data.output);
-        
-    } catch (error) {
-        addConsoleOutput('error', `Error: ${error.message}`);
     }
 }
 

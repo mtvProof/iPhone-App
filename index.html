@@ -82,6 +82,27 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="status-card">
+                        <div class="status-header">
+                            <span class="status-name">RATS-DiscordBot</span>
+                            <span class="status-indicator" id="rats-status">●</span>
+                        </div>
+                        <div class="status-details">
+                            <div class="detail-row">
+                                <span>Uptime:</span>
+                                <span id="rats-uptime">--</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Memory:</span>
+                                <span id="rats-memory">--</span>
+                            </div>
+                            <div class="detail-row">
+                                <span>Status:</span>
+                                <span id="rats-state">Checking...</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
             
@@ -131,20 +152,17 @@
                 </div>
             </section>
             
-            <!-- RCON Console -->
+            <!-- Bot Console Logs -->
             <section class="monitor-section">
-                <h3 class="section-title">🎮 RCON Consoles</h3>
+                <h3 class="section-title">📜 Bot Console Logs</h3>
                 <div class="rcon-tabs">
-                    <button class="tab-button active" data-bot="rustpp">RUST++ RCON</button>
-                    <button class="tab-button" data-bot="rcon">RCON Bot</button>
+                    <button class="tab-button active" data-bot="rustpp">RUST++</button>
+                    <button class="tab-button" data-bot="rcon">RCON</button>
+                    <button class="tab-button" data-bot="rats">RATS</button>
                 </div>
                 
                 <div class="rcon-console">
                     <div class="console-output" id="console-output"></div>
-                    <div class="console-input-wrapper">
-                        <input type="text" id="console-input" placeholder="Enter RCON command..." autocomplete="off">
-                        <button id="send-command">Send</button>
-                    </div>
                 </div>
             </section>
         </main>

@@ -82,16 +82,18 @@ async function checkProcessStatus(processName) {
 // Get bot status
 app.get('/api/status', async (req, res) => {
     try {
-        const [rustppStatus, rconStatus, piResources] = await Promise.all([
+        const [rustppStatus, rconStatus, ratsStatus, piResources] = await Promise.all([
             checkProcessStatus('rust'),  // Adjust process name as needed
             checkProcessStatus('rcon'),  // Adjust process name as needed
+            checkProcessStatus('node.*RATS'),  // RATS-DiscordBot (Node.js process)
             getPiResources()
         ]);
         
         res.json({
             bots: {
                 rustpp: rustppStatus,
-                rcon: rconStatus
+                rcon: rconStatus,
+                rats: ratsStatus
             },
             pi: piResources,
             timestamp: new Date().toISOString()
@@ -102,40 +104,63 @@ app.get('/api/status', async (req, res) => {
     }
 });
 
-// Execute RCON command (you'll need to integrate with your actual RCON implementation)
-app.post('/api/rcon', async (req, res) => {
-    const { bot, command } = req.body;
-    
-    try {
-        // This is a placeholder - integrate with your actual RCON bot
-        // You might want to send commands to your Discord bot or directly to the game server
-        
-        // Example: Forward to your RATS-DiscordBot if it has an API
-        // Or execute RCON command directly if you have credentials
-        
-        res.json({
-            success: true,
-            output: `Command sent to ${bot}: ${command}`,
-            timestamp: new Date().toISOString()
-        });
-    } catch (error) {
-        console.error('RCON error:', error);
-        res.status(500).json({ error: 'Failed to execute RCON command' });
-    }
-});
-
-// Get console history (mock data for now)
-app.get('/api/console/:bot', (req, res) => {
+// Get console history
+app.get('/api/console/:bot', async (req, res) => {
     const { bot } = req.params;
     
-    // This should be replaced with actual console log reading
-    res.json({
-        bot: bot,
-        lines: [
-            `[${new Date().toLocaleTimeString()}] Console initialized for ${bot}`,
-            `[${new Date().toLocaleTimeString()}] Type commands below...`
-        ]
-    });
+    try {
+        let lines = [];
+        let logPath = '';
+        
+        // Determine log file path based on bot
+        switch(bot) {
+            case 'rustpp':
+                // Check common log locations for RUST++ bot
+                logPath = '/home/mtvproof/.pm2/logs/rustpp-out.log'; // Adjust as needed
+                break;
+            case 'rcon':
+                logPath = '/home/mtvproof/.pm2/logs/rcon-out.log'; // Adjust as needed
+                break;
+            case 'rats':
+                logPath = '/home/mtvproof/.pm2/logs/RATS-out.log'; // Adjust as needed
+                break;
+        }
+        
+        // Try to read actual log file
+        if (logPath) {
+            try {
+                const { stdout } = await execPromise(`tail -n 50 "${logPath}" 2>/dev/null || echo ""`);
+                if (stdout.trim()) {
+                    lines = stdout.trim().split('\n').slice(-30); // Last 30 lines
+                }
+            } catch (err) {
+                // If log file doesn't exist, show default message
+            }
+        }
+        
+        // If no logs found, show default message
+        if (lines.length === 0) {
+            lines = [
+                `Console initialized for ${bot}`,
+                `Waiting for log data...`,
+                `Log path: ${logPath || 'Not configured'}`
+            ];
+        }
+        
+        res.json({
+            bot: bot,
+            lines: lines
+        });
+    } catch (error) {
+        console.error('Console error:', error);
+        res.json({
+            bot: bot,
+            lines: [
+                `Error loading console logs`,
+                `Check log file path configuration`
+            ]
+        });
+    }
 });
 
 app.listen(PORT, () => {
