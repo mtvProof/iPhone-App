@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeDashboard() {
     // Add initial console message
     addConsoleOutput('System', 'Dashboard initialized. Connecting to server...');
+    addConsoleOutput('System', `API URL: ${API_URL}`);
+    console.log('[Monitor] Dashboard initialized');
+    console.log('[Monitor] API URL:', API_URL);
 }
 
 function setupEventListeners() {
@@ -58,11 +61,14 @@ function stopMonitoring() {
 
 // Update all status information
 async function updateStatus() {
+    console.log('[Monitor] Fetching status from:', API_URL + '/status');
     try {
         const response = await fetch(`${API_URL}/status`);
+        console.log('[Monitor] Response status:', response.status);
         if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         
         const data = await response.json();
+        console.log('[Monitor] Data received:', data);
         
         // Update bot statuses
         updateBotStatus('rustpp', data.bots.rustpp);
@@ -78,7 +84,7 @@ async function updateStatus() {
         }
         
     } catch (error) {
-        console.error('Error updating status:', error);
+        console.error('[Monitor] Error updating status:', error);
         addConsoleOutput('error', `Connection failed: ${error.message}`);
         addConsoleOutput('warning', 'Make sure you are on the same network as your Pi');
         addConsoleOutput('warning', 'API URL: ' + API_URL);
