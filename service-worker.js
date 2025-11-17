@@ -1,9 +1,10 @@
-const CACHE_NAME = 'my-iphone-app-v2';
+const CACHE_NAME = 'my-iphone-app-v3';
 const urlsToCache = [
     './',
     './index.html',
     './styles.css',
     './app.js',
+    './monitor.js',
     './manifest.json',
     './apple-touch-icon.png'
 ];

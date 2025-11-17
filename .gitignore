@@ -51,3 +51,7 @@ yarn-error.log*
 node_modules/
 package-lock.json
 yarn.lock
+
+# API Server config (if you add sensitive data)
+.env
+config.json
