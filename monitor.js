@@ -4,7 +4,7 @@
 // Using Cloudflare Tunnel for remote access
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:3001/api'
-    : 'https://programs-rhode-maintaining-conversion.trycloudflare.com/api';
+    : 'https://weighted-regarded-sbjct-edit.trycloudflare.com/api';
 const UPDATE_INTERVAL = 5000; // Update every 5 seconds
 
 let currentBot = 'rustpp';
