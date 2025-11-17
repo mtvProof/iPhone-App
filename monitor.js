@@ -1,11 +1,10 @@
 // Monitoring Dashboard JavaScript
 
 // Configuration
-// When testing locally on same network, use Pi IP
-// When deployed, you'll need to expose this via port forwarding or use same network
+// Using Cloudflare Tunnel for remote access
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:3001/api'
-    : 'http://192.168.0.16:3001/api';
+    : 'https://programs-rhode-maintaining-conversion.trycloudflare.com/api';
 const UPDATE_INTERVAL = 5000; // Update every 5 seconds
 
 let currentBot = 'rustpp';
