@@ -1,7 +1,11 @@
 // Monitoring Dashboard JavaScript
 
 // Configuration
-const API_URL = 'http://192.168.0.16:3001/api';
+// When testing locally on same network, use Pi IP
+// When deployed, you'll need to expose this via port forwarding or use same network
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3001/api'
+    : 'http://192.168.0.16:3001/api';
 const UPDATE_INTERVAL = 5000; // Update every 5 seconds
 
 let currentBot = 'rustpp';
@@ -57,7 +61,7 @@ function stopMonitoring() {
 async function updateStatus() {
     try {
         const response = await fetch(`${API_URL}/status`);
-        if (!response.ok) throw new Error('Failed to fetch status');
+        if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         
         const data = await response.json();
         
@@ -68,8 +72,17 @@ async function updateStatus() {
         // Update Pi resources
         updatePiResources(data.pi);
         
+        // Clear any previous error messages
+        const consoleOutput = document.getElementById('console-output');
+        if (consoleOutput && consoleOutput.children.length === 0) {
+            addConsoleOutput('system', `Connected to API server at ${API_URL}`);
+        }
+        
     } catch (error) {
         console.error('Error updating status:', error);
+        addConsoleOutput('error', `Connection failed: ${error.message}`);
+        addConsoleOutput('warning', 'Make sure you are on the same network as your Pi');
+        addConsoleOutput('warning', 'API URL: ' + API_URL);
         handleOfflineState();
     }
 }
@@ -149,14 +162,16 @@ function clearConsole() {
 async function loadConsoleHistory(bot) {
     try {
         const response = await fetch(`${API_URL}/console/${bot}`);
-        if (!response.ok) throw new Error('Failed to load console');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         
         const data = await response.json();
         data.lines.forEach(line => {
             addConsoleOutput('system', line);
         });
     } catch (error) {
-        addConsoleOutput('error', `Failed to load console history: ${error.message}`);
+        addConsoleOutput('error', `Failed to load console: ${error.message}`);
+        addConsoleOutput('warning', 'Check that API server is running and accessible');
+        addConsoleOutput('system', `Trying to connect to: ${API_URL}`);
     }
 }
 
