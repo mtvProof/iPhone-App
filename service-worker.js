@@ -1,11 +1,11 @@
 const CACHE_NAME = 'my-iphone-app-v1';
 const urlsToCache = [
-    '/',
-    '/index.html',
-    '/styles.css',
-    '/app.js',
-    '/manifest.json',
-    '/logo.svg'
+    './',
+    './index.html',
+    './styles.css',
+    './app.js',
+    './manifest.json',
+    './logo.svg'
 ];
 
 // Install event - cache files

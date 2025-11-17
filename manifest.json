@@ -2,7 +2,7 @@
   "name": "My iPhone App",
   "short_name": "My App",
   "description": "A personal iPhone app",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
