@@ -145,3 +145,58 @@ Once deployed:
 4. Monitor your bots from anywhere!
 
 **Note:** Your Pi must be accessible from your phone's network (same WiFi or port forwarded if remote).
+
+---
+
+## Bot Console Log Configuration
+
+The dashboard now shows real-time console logs from your bots. To configure:
+
+### Finding Your Bot Log Files
+
+1. **If using PM2:**
+   ```bash
+   pm2 list  # See all running processes
+   pm2 logs  # View all logs
+   ```
+   
+   PM2 logs are stored in: `~/.pm2/logs/`
+   - RUST++ Bot: `~/.pm2/logs/YOUR-RUSTPP-PROCESS-out.log`
+   - RCON Bot: `~/.pm2/logs/YOUR-RCON-PROCESS-out.log`
+   - RATS-DiscordBot: `~/.pm2/logs/RATS-out.log`
+
+2. **Update log paths in `api-server.js`:**
+   
+   Edit lines 115-125 to match your actual log file paths:
+   ```javascript
+   case 'rustpp':
+       logPath = '/home/mtvproof/.pm2/logs/YOUR-ACTUAL-RUSTPP-LOG.log';
+       break;
+   case 'rcon':
+       logPath = '/home/mtvproof/.pm2/logs/YOUR-ACTUAL-RCON-LOG.log';
+       break;
+   case 'rats':
+       logPath = '/home/mtvproof/.pm2/logs/RATS-out.log';
+       break;
+   ```
+
+3. **Restart API after changes:**
+   ```bash
+   pm2 restart iphone-api
+   ```
+
+### Bot Process Name Configuration
+
+Update the process names checked in `api-server.js` (lines 87-89):
+```javascript
+checkProcessStatus('rust'),  // Change 'rust' to your RUST++ process name
+checkProcessStatus('rcon'),  // Change 'rcon' to your RCON process name
+checkProcessStatus('node.*RATS'),  // For RATS-DiscordBot (Node.js process)
+```
+
+To find your actual process names:
+```bash
+ps aux | grep -i bot
+ps aux | grep -i rust
+ps aux | grep -i rcon
+```
